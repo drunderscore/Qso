@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qso", "Qso\Qso.csproj", "{2C9D7785-5916-40CF-A567-C6287304D11A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QsoClient", "QsoClient\QsoClient.csproj", "{99DE08E1-2EAA-440F-821E-517F236BC852}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C9D7785-5916-40CF-A567-C6287304D11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C9D7785-5916-40CF-A567-C6287304D11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C9D7785-5916-40CF-A567-C6287304D11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C9D7785-5916-40CF-A567-C6287304D11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99DE08E1-2EAA-440F-821E-517F236BC852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99DE08E1-2EAA-440F-821E-517F236BC852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99DE08E1-2EAA-440F-821E-517F236BC852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99DE08E1-2EAA-440F-821E-517F236BC852}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CF84379-BA5A-4E39-B80B-81A34707F7EA}
+	EndGlobalSection
+EndGlobal
