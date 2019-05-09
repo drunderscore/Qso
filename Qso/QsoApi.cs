@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
@@ -17,16 +18,8 @@ namespace Qso
 {
     public class QsoApi
     {
-        #region Ugly DllImports
-        [DllImport( "ProcCmdLine32.dll", CharSet = CharSet.Unicode, EntryPoint = "GetProcCmdLine" )]
-        private extern static bool GetProcCmdLine32( uint nProcId, StringBuilder sb, uint dwSizeBuf );
-        [DllImport( "ProcCmdLine64.dll", CharSet = CharSet.Unicode, EntryPoint = "GetProcCmdLine" )]
-        private extern static bool GetProcCmdLine64( uint nProcId, StringBuilder sb, uint dwSizeBuf );
-
-        #endregion
         private static WebSocketManager WSManager { get; set; }
         private static HttpClient Client { get; set; }
-
         private static readonly string LEAGUE_CERT_THUMBPRINT = "8259aafd8f71a809d2b154dd1cdb492981e448bd";
         private static readonly Regex _cmdLineRegex = new Regex( "\"--([a-z-]+|-)=([^\"]+)\"" ); // without escapes: "--([a-z-]+|-)=([^"]+)"
         public static readonly RemoteCertificateValidationCallback RiotCertValidation = ( sender, cert, chain, sslPolErrors ) => { return sslPolErrors == SslPolicyErrors.None || cert.GetCertHashString().ToLower() == LEAGUE_CERT_THUMBPRINT; };
@@ -57,7 +50,7 @@ namespace Qso
 
             var p = leaguesRunning[0];
 
-            var mc = _cmdLineRegex.Matches( GetCommandLineOfProcess( p ) );
+            var mc = _cmdLineRegex.Matches( GetCommandLine( p ) );
             var uxArgs = mc.Cast<Match>().ToDictionary( m => m.Groups[1].Value, m => m.Groups[2].Value );
             string[] lockfileArgs;
 
@@ -184,22 +177,35 @@ namespace Qso
         }
         #endregion
 
-        // Thanks https://stackoverflow.com/a/46006415
-        private static string GetCommandLineOfProcess( Process proc )
+        // Define an extension method for type System.Process that returns the command 
+        // line via WMI.
+        private static string GetCommandLine( Process process )
         {
-            // max size of a command line is USHORT/sizeof(WCHAR), so we are going
-            // just allocate max USHORT for sanity's sake.
-            var sb = new StringBuilder( 0xFFFF );
-            switch ( IntPtr.Size )
+            string cmdLine = null;
+            using ( var searcher = new ManagementObjectSearcher(
+              $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {process.Id}" ) )
             {
-                case 4:
-                    GetProcCmdLine32( (uint)proc.Id, sb, (uint)sb.Capacity );
-                    break;
-                case 8:
-                    GetProcCmdLine64( (uint)proc.Id, sb, (uint)sb.Capacity );
-                    break;
+                // By definition, the query returns at most 1 match, because the process 
+                // is looked up by ID (which is unique by definition).
+                using ( var matchEnum = searcher.Get().GetEnumerator() )
+                {
+                    if ( matchEnum.MoveNext() ) // Move to the 1st item.
+                    {
+                        cmdLine = matchEnum.Current["CommandLine"]?.ToString();
+                    }
+                }
             }
-            return sb.ToString();
+            if ( cmdLine == null )
+            {
+                // Not having found a command line implies 1 of 2 exceptions, which the
+                // WMI query masked:
+                // An "Access denied" exception due to lack of privileges.
+                // A "Cannot process request because the process (<pid>) has exited."
+                // exception due to the process having terminated.
+                // We provoke the same exception again simply by accessing process.MainModule.
+                var dummy = process.MainModule; // Provoke exception.
+            }
+            return cmdLine;
         }
     }
 }
