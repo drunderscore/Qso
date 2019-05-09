@@ -16,14 +16,6 @@ namespace QsoClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             QsoApi.Initialize();
-            //foreach ( ChatUser cu in QsoApi.GetMyFriends() )
-            //{
-            //    Console.WriteLine( cu.Name + " / " + cu.ID );
-            //}
-            //QsoApi.SendFriendRequest( 12 );
-            //QsoApi.SendFriendRequest( "Die" );
-            //var lobby = QsoApi.GetMyLobby();
-            //lobby.Invite( QsoApi.GetSummonerByID( 102660481 ) );
             Application.Run( new MainWindow() );
         }
     }
