@@ -67,6 +67,9 @@
     <Compile Include="DTO\LobbyGameConfig.cs" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="ProcCmdLine32.dll" />
+    <Content Include="ProcCmdLine64.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
