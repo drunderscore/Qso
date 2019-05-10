@@ -59,6 +59,7 @@
     <Compile Include="DTO\ServiceStatusTickerMessage.cs" />
     <Compile Include="DTO\Summoner.cs" />
     <Compile Include="DTO\LobbyBuilder.cs" />
+    <Compile Include="EndpointEventArgs.cs" />
     <Compile Include="QsoApi.cs" />
     <Compile Include="QsoException.cs" />
     <Compile Include="WebSocketManager.cs" />

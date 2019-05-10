@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Qso.DTO;
+using WebSocketSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +17,8 @@ using System.Text.RegularExpressions;
 
 namespace Qso
 {
+    public delegate void OnEndpointEvent( object src, EndpointEventArgs args );
+
     public class QsoApi
     {
         private static WebSocketManager WSManager { get; set; }
@@ -23,6 +26,7 @@ namespace Qso
         private static readonly string LEAGUE_CERT_THUMBPRINT = "8259aafd8f71a809d2b154dd1cdb492981e448bd";
         private static readonly Regex _cmdLineRegex = new Regex( "\"--([a-z-]+|-)=([^\"]+)\"" ); // without escapes: "--([a-z-]+|-)=([^"]+)"
         public static readonly RemoteCertificateValidationCallback RiotCertValidation = ( sender, cert, chain, sslPolErrors ) => { return sslPolErrors == SslPolicyErrors.None || cert.GetCertHashString().ToLower() == LEAGUE_CERT_THUMBPRINT; };
+        public static event OnEndpointEvent EndpointEvent;
 
         #region Qso Creation
 
@@ -36,8 +40,28 @@ namespace Qso
             ServicePointManager.ServerCertificateValidationCallback += RiotCertValidation;
             Client = new HttpClient();
             WSManager = new WebSocketManager( ip, port, password );
+            WSManager.WS.OnMessage += WebSocketOnMessage;
             var build = GetBuild();
             Console.WriteLine( $"Qso initialized. Branch {build.Branch}, Version {build.Version}" );
+        }
+
+        private static void WebSocketOnMessage( object sender, MessageEventArgs e )
+        {
+            JArray json = null;
+            try
+            {
+                json = JArray.Parse( e.Data );
+            }
+            catch ( JsonReaderException )
+            {
+                Console.WriteLine( "Invalid JSON sent over WebSocket" );
+                return;
+            }
+            var uri = json[2]["uri"];
+            var eventType = json[2]["eventType"];
+            var data = json[2]["data"];
+            Console.WriteLine( $"[{eventType}]: {uri}" );
+            EndpointEvent?.Invoke( null, new EndpointEventArgs( uri.Value<string>(), eventType.Value<string>(), data ) );
         }
 
         public static void Initialize()

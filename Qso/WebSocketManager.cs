@@ -28,10 +28,6 @@ namespace Qso
             WS = new WebSocket( $"wss://{ip}:{port}" );
             WS.SslConfiguration.EnabledSslProtocols = ( SslProtocols.Tls12 | SslProtocols.Tls11 );
             WS.SslConfiguration.ServerCertificateValidationCallback += QsoApi.RiotCertValidation;
-            WS.OnOpen += OnOpen;
-            WS.OnMessage += OnMessage;
-            WS.OnClose += OnClose;
-            WS.OnError += OnError;
 
             WS.SetCredentials( "riot", pass, true ); // Make sure to use preauth
             WS.Connect();
@@ -41,26 +37,6 @@ namespace Qso
         private void Subscribe( string evt )
         {
             WS.Send( $"[5, \"{evt}\"]" );
-        }
-
-        private void OnError( object sender, ErrorEventArgs e )
-        {
-            Console.WriteLine( "WebSocket error! " + e.Message );
-        }
-
-        private void OnClose( object sender, CloseEventArgs e )
-        {
-            Console.WriteLine( "WebSocket close! code " + e.Code + ": " + e.Reason + " (wasClean " + e.WasClean + ")" );
-        }
-
-        private void OnMessage( object sender, MessageEventArgs e )
-        {
-            Console.WriteLine( "OnMessage data: " + e.Data );
-        }
-
-        private void OnOpen( object sender, EventArgs e )
-        {
-            Console.WriteLine( "WebSocket opened." );
         }
     }
 }
