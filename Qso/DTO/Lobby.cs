@@ -81,6 +81,19 @@ namespace Qso.DTO
             QsoApi.Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Delete );
         }
 
+        /// <summary>
+        /// This will reset the position you do not specify. Specify both at once to set both.
+        /// </summary>
+        public void SetPositionPreferences( string primary = null, string secondary = null )
+        {
+            dynamic json = new JObject();
+            if ( primary != null )
+                json.firstPreference = secondary;
+            if ( secondary != null )
+                json.secondPreference = secondary;
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/localMember/position-preferences", HttpMethod.Put, json );
+        }
+
         public void StartQueue()
         {
             QsoApi.Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Post );

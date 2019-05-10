@@ -175,6 +175,24 @@ namespace Qso
         {
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
         }
+
+        /// <summary>
+        /// Flash the window and process taskbar icon.
+        /// </summary>
+        public static void FlashUX()
+        {
+            Call( "/riotclient/ux-flash", HttpMethod.Post );
+        }
+
+        public static void MinimixeUX()
+        {
+            Call( "/riotclient/ux-minimize", HttpMethod.Post );
+        }
+
+        public static void ShowUX()
+        {
+            Call( "/riotclient/ux-show", HttpMethod.Post );
+        }
         #endregion
 
         // Define an extension method for type System.Process that returns the command 
