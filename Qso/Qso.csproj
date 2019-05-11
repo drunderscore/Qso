@@ -72,6 +72,7 @@
     <Compile Include="DTO\PlayerLoot.cs" />
     <Compile Include="DTO\MyChatUser.cs" />
     <Compile Include="DTO\MySummoner.cs" />
+    <Compile Include="DTO\ReplayMetadata.cs" />
     <Compile Include="DTO\ServiceStatusTickerMessage.cs" />
     <Compile Include="DTO\Summoner.cs" />
     <Compile Include="DTO\LobbyBuilder.cs" />

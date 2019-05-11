@@ -68,10 +68,8 @@ namespace Qso
         public static void Initialize()
         {
             Process[] leaguesRunning = Process.GetProcessesByName( "LeagueClientUx" );
-            if ( leaguesRunning.Length <= 0 )
-                throw new QsoException( "The League Client must be running." );
-            if ( leaguesRunning.Length > 1 )
-                throw new QsoException( "Qso cannot be used whilst multiple League Client processes are running." );
+            if ( leaguesRunning.Length != 1 )
+                throw new QsoException( "Couldn't find the correct League Client. Is it not running, or are their multiple instances?" );
 
             var p = leaguesRunning[0];
 
@@ -212,6 +210,21 @@ namespace Qso
         public static ChampSelectSession GetMyChampSelect()
         {
             return GetDTO<ChampSelectSession>( "/lol-champ-select/v1/session", HttpMethod.Get );
+        }
+
+        public static ReplayMetadata GetReplayMetadata( long gameId )
+        {
+            return GetDTO<ReplayMetadata>( "/lol-replays/v1/metadata/{0}", HttpMethod.Get, null, gameId.ToString() );
+        }
+
+        public static void DownloadReplay( long gameId )
+        {
+            Call( "/lol-replays/v1/rofls/{0}/download", HttpMethod.Post, "{}", gameId.ToString() );
+        }
+
+        public static string GetReplaysPath()
+        {
+            return GetDTO<string>( "/lol-replays/v1/rofls/path", HttpMethod.Get );
         }
 
         /// <summary>
