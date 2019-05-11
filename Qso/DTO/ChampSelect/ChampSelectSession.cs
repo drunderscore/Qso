@@ -11,8 +11,8 @@ namespace Qso.DTO
 {
     public class ChampSelectSession
     {
-        //[JsonProperty( "actions" )]
-        //public ChampSelectAction[] Actions { get; internal set; }
+        [JsonProperty( "actions" )]
+        public ChampSelectAction[][] Actions { get; internal set; }
         [JsonProperty( "allowBatleBoost" )]
         public bool AllowBatleBoost { get; internal set; }
         [JsonProperty( "allowDuplicatePicks" )]
@@ -34,13 +34,37 @@ namespace Qso.DTO
         [JsonProperty( "isSpectating" )]
         public bool Spectating { get; internal set; }
         [JsonProperty( "localPlayerCellId" )]
-        public bool LocalPlayerCellID { get; internal set; }
+        public int LocalPlayerCellID { get; internal set; }
         [JsonProperty( "myTeam" )]
         public ChampSelectPlayerSelection[] MyTeam { get; internal set; }
         [JsonProperty( "theirTeam" )]
         public ChampSelectPlayerSelection[] TheirTeam { get; internal set; }
         [JsonProperty( "timer" )]
         public ChampSelectTimer Timer { get; internal set; }
+
+        public ChampSelectAction[] GetActions()
+        {
+            List<ChampSelectAction> ret = new List<ChampSelectAction>();
+            Actions.ToList().ForEach( e => ret.Add( e[0] ) );
+            return ret.ToArray();
+        }
+
+        public ChampSelectAction[] GetActionsForCell( int cellId )
+        {
+            return GetActions().Where( e => e.ActorCellID == cellId ).ToArray();
+        }
+
+        // TODO: can there be more than one uncompleted actions for the same cell?
+        /// <summary>
+        /// Gets the next uncompleted action for <paramref name="cellId"/>.
+        /// </summary>
+        /// <param name="cellId"></param>
+        /// <returns>An uncompleted action, or null if none/more than one was found.</returns>
+        public ChampSelectAction GetNextActionForCell( int cellId )
+        {
+            var temp = GetActions().Where( e => e.ActorCellID == cellId ).Where( e => e.Completed == false ).ToArray();
+            return temp.Length == 1 ? temp[0] : null;
+        }
 
         public void SetSpell1( int id )
         {
