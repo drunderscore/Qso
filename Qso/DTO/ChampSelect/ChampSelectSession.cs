@@ -66,14 +66,14 @@ namespace Qso.DTO
             return temp.Length == 1 ? temp[0] : null;
         }
 
-        public void SetSpell1( int id )
+        public void SetSpell1( SummonerSpell id )
         {
             dynamic json = new JObject();
             json.spell1Id = id;
             QsoApi.Call( "/lol-champ-select/v1/session/my-selection", new HttpMethod( "PATCH" ), json.ToString() );
         }
 
-        public void SetSpell2( int id )
+        public void SetSpell2( SummonerSpell id )
         {
             dynamic json = new JObject();
             json.spell2Id = id;

@@ -199,4 +199,19 @@ namespace Qso.DTO
         Zilean = 26,
         Zyra = 143
     }
+
+    public enum SummonerSpell : int
+    {
+        Barrier = 21,
+        Cleanse = 1,
+        Ignite = 14,
+        Exhaust = 3,
+        Flash = 4,
+        Ghost = 6,
+        Heal = 7,
+        Clarity = 13,
+        Smite = 11,
+        SnowballMark = 32,
+        Teleport = 12
+    }
 }
