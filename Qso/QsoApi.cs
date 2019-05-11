@@ -196,6 +196,16 @@ namespace Qso
             return GetDTO<Summoner>( "/lol-summoner/v2/summoners", HttpMethod.Get, json.ToString() );
         }
 
+        public static PlayerLoot[] GetMyPlayerLoot()
+        {
+            return GetDTO<PlayerLoot[]>( "/lol-loot/v1/player-loot", HttpMethod.Get );
+        }
+
+        public static PlayerLoot GetLootByID( string id )
+        {
+            return GetDTO<PlayerLoot>( "/lol-loot/v1/player-loot/{0}", HttpMethod.Get, null, id );
+        }
+
         public static BuildInfo GetBuild()
         {
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
@@ -220,8 +230,6 @@ namespace Qso
         }
         #endregion
 
-        // Define an extension method for type System.Process that returns the command 
-        // line via WMI.
         private static string GetCommandLine( Process process )
         {
             string cmdLine = null;

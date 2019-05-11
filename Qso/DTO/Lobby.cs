@@ -31,10 +31,10 @@ namespace Qso.DTO
             return QsoApi.GetDTO<LobbyInvitation[]>( "/lol-lobby/v2/lobby/invitations", HttpMethod.Get );
         }
 
-        public LobbyInvitation[] Invite( Summoner s )
+        public LobbyInvitation[] Invite( int id )
         {
             dynamic obj = new JObject();
-            obj.toSummonerId = s.ID;
+            obj.toSummonerId = id;
             dynamic json = new JArray( obj );
             return QsoApi.GetDTO<LobbyInvitation[]>( "/lol-lobby/v2/lobby/invitations", HttpMethod.Post, json.ToString() );
         }
@@ -65,6 +65,16 @@ namespace Qso.DTO
         public void Promote( Summoner s )
         {
             QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, s.ID.ToString() );
+        }
+
+        public void Kick( int id )
+        {
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/kick", HttpMethod.Post, null, id.ToString() );
+        }
+
+        public void Promote( int id )
+        {
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, id.ToString() );
         }
 
         public void AddBot( ChampionID champion, TeamID team, string difficulty )
