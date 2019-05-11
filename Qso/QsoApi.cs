@@ -206,6 +206,11 @@ namespace Qso
             return GetDTO<PlayerLoot>( "/lol-loot/v1/player-loot/{0}", HttpMethod.Get, null, id );
         }
 
+        public static ChampSelectSession GetMyChampSelect()
+        {
+            return GetDTO<ChampSelectSession>( "/lol-champ-select/v1/session", HttpMethod.Get );
+        }
+
         public static BuildInfo GetBuild()
         {
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
