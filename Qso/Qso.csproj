@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\BuildInfo.cs" />
+    <Compile Include="DTO\ChampSelect\ChampSelectAction.cs" />
     <Compile Include="DTO\ChampSelect\ChampSelectBannedChampions.cs" />
     <Compile Include="DTO\ChampSelect\ChampSelectChatRoomDetails.cs" />
     <Compile Include="DTO\ChampSelect\ChampSelectPlayerSelection.cs" />
