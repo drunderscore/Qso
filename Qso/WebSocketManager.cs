@@ -25,7 +25,7 @@ namespace Qso
             IP = ip;
             Port = port;
             Password = pass;
-            logger.Info( $"Connecting to {ip}:{port}" );
+            logger.Info( "Connecting to {0}:{1}", ip, port );
             WS = new WebSocket( $"wss://{ip}:{port}" );
             WS.SslConfiguration.EnabledSslProtocols = ( SslProtocols.Tls12 | SslProtocols.Tls11 );
             WS.SslConfiguration.ServerCertificateValidationCallback += QsoApi.RiotCertValidation;
