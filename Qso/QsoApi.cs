@@ -211,6 +211,16 @@ namespace Qso
             return GetDTO<ChampSelectSession>( "/lol-champ-select/v1/session", HttpMethod.Get );
         }
 
+        /// <summary>
+        /// Gets Riot's content targeting filters they've made for you.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetContentFilters()
+        {
+            JObject json = JObject.Parse( Call( "/lol-content-targeting/v1/filters", HttpMethod.Get ) );
+            return json["filters"].ToObject<string[]>();
+        }
+
         public static BuildInfo GetBuild()
         {
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
