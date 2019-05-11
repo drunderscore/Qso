@@ -19,11 +19,9 @@ namespace QsoClient
             InitializeComponent();
         }
 
-        private void button1_Click( object sender, EventArgs e )
+        private void MainWindow_Load( object sender, EventArgs e )
         {
-            QueueType id;
-            if ( Enum.TryParse( textBox1.Text, out id ) )
-                QsoApi.CreateLobby( id );
+
         }
     }
 }

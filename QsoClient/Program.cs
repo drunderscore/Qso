@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QsoClient
+namespace QsoClient.Windows
 {
     static class Program
     {
@@ -15,8 +15,25 @@ namespace QsoClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
-            QsoApi.Initialize();
+            if ( !AttemptInitializeQso() )
+                return;
             Application.Run( new MainWindow() );
+        }
+
+        private static bool AttemptInitializeQso()
+        {
+            try
+            {
+                QsoApi.Initialize();
+            }
+            catch ( QsoException e )
+            {
+                if ( MessageBox.Show( e.Message, "Exception initializing Qso", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error ) == DialogResult.Retry )
+                    return AttemptInitializeQso();
+                else
+                    return false;
+            }
+            return true;
         }
     }
 }
