@@ -27,6 +27,7 @@ namespace Qso
         private static readonly Regex _cmdLineRegex = new Regex( "\"--([a-z-]+|-)=([^\"]+)\"" ); // without escapes: "--([a-z-]+|-)=([^"]+)"
         public static readonly RemoteCertificateValidationCallback RiotCertValidation = ( sender, cert, chain, sslPolErrors ) => { return sslPolErrors == SslPolicyErrors.None || cert.GetCertHashString().ToLower() == LEAGUE_CERT_THUMBPRINT; };
         public static event OnEndpointEvent EndpointEvent;
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         #region Qso Creation
 
@@ -42,7 +43,7 @@ namespace Qso
             WSManager = new WebSocketManager( ip, port, password );
             WSManager.WS.OnMessage += WebSocketOnMessage;
             var build = GetBuild();
-            Console.WriteLine( $"Qso initialized. Branch {build.Branch}, Version {build.Version}" );
+            logger.Info( "Qso initialized. (League Branch {0}, League Version {1})", build.Branch, build.Version );
         }
 
         private static void WebSocketOnMessage( object sender, MessageEventArgs e )
@@ -52,15 +53,15 @@ namespace Qso
             {
                 json = JArray.Parse( e.Data );
             }
-            catch ( JsonReaderException )
+            catch ( JsonReaderException ex )
             {
-                Console.WriteLine( "Invalid JSON sent over WebSocket" );
+                logger.Error( "Invalid JSON sent over WebSocket", ex );
                 return;
             }
             var uri = json[2]["uri"];
             var eventType = json[2]["eventType"];
             var data = json[2]["data"];
-            Console.WriteLine( $"[{eventType}]: {uri}" );
+            logger.Trace( "Event {0} ({1})", uri, eventType );
             EndpointEvent?.Invoke( null, new EndpointEventArgs( uri.Value<string>(), eventType.Value<string>(), data ) );
         }
 
@@ -90,7 +91,7 @@ namespace Qso
         public static string Call( string path, HttpMethod method, string body = null, params string[] parameters )
         {
             string finalPath = $"https://127.0.0.1:{WSManager.Port}{string.Format( path, parameters )}";
-            Console.WriteLine( $"Requesting {finalPath} ({method.Method})" );
+            logger.Debug( "Requesting URI {0} ({1})", finalPath, method.Method );
 
             using ( HttpRequestMessage req = new HttpRequestMessage( method, new Uri( finalPath ) ) )
             {
@@ -104,7 +105,7 @@ namespace Qso
                 using ( HttpResponseMessage resp = Client.SendAsync( req ).Result )
                 {
                     string res = resp.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine( $"RESPONSE: {res}" );
+                    logger.Trace( "Response status: {0} ({1})", resp.StatusCode, resp.ReasonPhrase );
                     return res;
                 }
             }
