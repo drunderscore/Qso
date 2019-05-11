@@ -65,6 +65,7 @@
     <Compile Include="DTO\ChampSelect\ChampSelectTimer.cs" />
     <Compile Include="DTO\ChatUser.cs" />
     <Compile Include="DTO\Constants.cs" />
+    <Compile Include="DTO\ErrorResponse.cs" />
     <Compile Include="DTO\Lobby.cs" />
     <Compile Include="DTO\LobbyInvitation.cs" />
     <Compile Include="DTO\LobbyParticipant.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="DTO\LobbyBuilder.cs" />
     <Compile Include="EndpointEventArgs.cs" />
     <Compile Include="QsoApi.cs" />
+    <Compile Include="QsoEndpointException.cs" />
     <Compile Include="QsoException.cs" />
     <Compile Include="WebSocketManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

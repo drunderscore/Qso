@@ -106,6 +106,9 @@ namespace Qso
                 {
                     string res = resp.Content.ReadAsStringAsync().Result;
                     logger.Trace( "Response status: {0} ({1})", resp.StatusCode, resp.ReasonPhrase );
+
+                    if ( !resp.IsSuccessStatusCode )
+                        throw new QsoEndpointException( res, resp.StatusCode );
                     return res;
                 }
             }

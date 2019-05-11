@@ -23,5 +23,20 @@ namespace QsoClient
         {
 
         }
+
+        private void button1_Click( object sender, EventArgs e )
+        {
+            var session = QsoApi.GetMyChampSelect();
+            ChampionID champ;
+            if ( !Enum.TryParse( textBox1.Text, true, out champ ) )
+                return;
+            session.GetNextActionForCell( session.LocalPlayerCellID ).Execute( champ, true );
+        }
+
+        private void button2_Click( object sender, EventArgs e )
+        {
+            var session = QsoApi.GetMyChampSelect();
+            label1.Text = session.GetNextActionForCell( session.LocalPlayerCellID ).Type;
+        }
     }
 }
