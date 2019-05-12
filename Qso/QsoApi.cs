@@ -28,6 +28,7 @@ namespace Qso
         public static readonly RemoteCertificateValidationCallback RiotCertValidation = ( sender, cert, chain, sslPolErrors ) => { return sslPolErrors == SslPolicyErrors.None || cert.GetCertHashString().ToLower() == LEAGUE_CERT_THUMBPRINT; };
         public static event OnEndpointEvent EndpointEvent;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        public static bool VeryVerbose { get; set; }
 
         #region Qso Creation
 
@@ -62,6 +63,8 @@ namespace Qso
             var eventType = json[2]["eventType"];
             var data = json[2]["data"];
             logger.Trace( "Event {0} ({1})", uri, eventType );
+            if ( VeryVerbose )
+                logger.Trace( data );
             EndpointEvent?.Invoke( null, new EndpointEventArgs( uri.Value<string>(), eventType.Value<string>(), data ) );
         }
 
@@ -86,7 +89,8 @@ namespace Qso
         #endregion
 
         #region DTO Helpers
-        public static string Call( string path, HttpMethod method, string body = null, params string[] parameters )
+        // TODO: Support query parameters?
+        public static string Call( string path, HttpMethod method, string body = null, params object[] parameters )
         {
             string finalPath = $"https://127.0.0.1:{WSManager.Port}{string.Format( path, parameters )}";
             logger.Debug( "Requesting URI {0} ({1})", finalPath, method.Method );
@@ -104,6 +108,8 @@ namespace Qso
                 {
                     string res = resp.Content.ReadAsStringAsync().Result;
                     logger.Trace( "Response status: {0} ({1})", resp.StatusCode, resp.ReasonPhrase );
+                    if ( VeryVerbose )
+                        logger.Trace( res );
 
                     if ( !resp.IsSuccessStatusCode )
                         throw new QsoEndpointException( res, resp.StatusCode );
@@ -112,7 +118,7 @@ namespace Qso
             }
         }
 
-        public static T GetDTO<T>( string path, HttpMethod method, string body = null, params string[] parameters )
+        public static T GetDTO<T>( string path, HttpMethod method, string body = null, params object[] parameters )
         {
             return JsonConvert.DeserializeObject<T>( Call( path, method, body, parameters ) );
         }
@@ -177,17 +183,17 @@ namespace Qso
 
         public static void RevokeFriendRequest( int id )
         {
-            Call( "/lol-chat/v1/friend-requests/{0}", HttpMethod.Delete, null, id.ToString() );
+            Call( "/lol-chat/v1/friend-requests/{0}", HttpMethod.Delete, null, id );
         }
 
         public static void RemoveFriend( int id )
         {
-            Call( "/lol-chat/v1/friends/{0}", HttpMethod.Delete, null, id.ToString() );
+            Call( "/lol-chat/v1/friends/{0}", HttpMethod.Delete, null, id );
         }
 
         public static Summoner GetSummonerByID( long id )
         {
-            return GetDTO<Summoner>( "/lol-summoner/v1/summoners/{0}", HttpMethod.Get, null, id.ToString() );
+            return GetDTO<Summoner>( "/lol-summoner/v1/summoners/{0}", HttpMethod.Get, null, id );
         }
 
         public static Summoner GetSummonerByName( string name )
@@ -214,12 +220,28 @@ namespace Qso
 
         public static ReplayMetadata GetReplayMetadata( long gameId )
         {
-            return GetDTO<ReplayMetadata>( "/lol-replays/v1/metadata/{0}", HttpMethod.Get, null, gameId.ToString() );
+            return GetDTO<ReplayMetadata>( "/lol-replays/v1/metadata/{0}", HttpMethod.Get, null, gameId );
         }
 
         public static void DownloadReplay( long gameId )
         {
-            Call( "/lol-replays/v1/rofls/{0}/download", HttpMethod.Post, "{}", gameId.ToString() );
+            Call( "/lol-replays/v1/rofls/{0}/download", HttpMethod.Post, "{}", gameId );
+        }
+
+        // TODO: Make this not require both the item and recipe.
+        // TODO: Support query parameters. See Call method.
+        public static PlayerLootUpdate CraftRecipe( PlayerLoot item, LootRecipe recipe, int repeat = 0 )
+        {
+            return CraftRecipe( item.Name, recipe.RecipeName, repeat );
+        }
+
+        public static PlayerLootUpdate CraftRecipe( string item, string recipe, int repeat = 0 )
+        {
+            dynamic json = new JArray( item );
+            var uri = $"/lol-loot/v1/recipes/{{0}}/craft";
+            if ( repeat > 0 )
+                uri += $"?repeat={repeat}";
+            return GetDTO<PlayerLootUpdate>( uri, HttpMethod.Post, json.ToString(), recipe );
         }
 
         public static string GetReplaysPath()
@@ -235,6 +257,26 @@ namespace Qso
         {
             JObject json = JObject.Parse( Call( "/lol-content-targeting/v1/filters", HttpMethod.Get ) );
             return json["filters"].ToObject<string[]>();
+        }
+
+        public void StartQueue()
+        {
+            Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Post );
+        }
+
+        public void StopQueue()
+        {
+            Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Delete );
+        }
+
+        public static void AcceptQueue()
+        {
+            Call( "/lol-matchmaking/v1/ready-check/accept", HttpMethod.Post );
+        }
+
+        public static void DeclineQueue()
+        {
+            Call( "/lol-matchmaking/v1/ready-check/decline", HttpMethod.Post );
         }
 
         public static BuildInfo GetBuild()

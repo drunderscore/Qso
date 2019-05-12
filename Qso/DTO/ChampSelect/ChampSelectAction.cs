@@ -30,7 +30,7 @@ namespace Qso.DTO
             dynamic json = new JObject();
             json.championId = champ;
             json.completed = completed;
-            QsoApi.Call( "/lol-champ-select/v1/session/actions/{0}", new HttpMethod( "PATCH" ), json.ToString(), ID.ToString() );
+            QsoApi.Call( "/lol-champ-select/v1/session/actions/{0}", new HttpMethod( "PATCH" ), json.ToString(), ID );
         }
     }
 }

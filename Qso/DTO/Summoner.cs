@@ -31,7 +31,7 @@ namespace Qso.DTO
 
         public virtual ChatUser GetChatUser()
         {
-            return QsoApi.GetDTO<ChatUser>( "/lol-chat/v1/friends/{0}", HttpMethod.Get, null, ID.ToString() );
+            return QsoApi.GetDTO<ChatUser>( "/lol-chat/v1/friends/{0}", HttpMethod.Get, null, ID );
         }
     }
 }

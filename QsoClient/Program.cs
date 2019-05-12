@@ -10,13 +10,13 @@ namespace QsoClient.Windows
 {
     static class Program
     {
-        [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             if ( !AttemptInitializeQso() )
                 return;
+            QsoApi.VeryVerbose = true;
             Application.Run( new MainWindow() );
         }
 

@@ -30,7 +30,7 @@ namespace Qso.DTO
         {
             dynamic json = new JObject();
             json.body = message;
-            QsoApi.Call( "/lol-chat/v1/conversations/{0}/messages", HttpMethod.Post, json.ToString(), ID.ToString() );
+            QsoApi.Call( "/lol-chat/v1/conversations/{0}/messages", HttpMethod.Post, json.ToString(), ID );
         }
     }
 }

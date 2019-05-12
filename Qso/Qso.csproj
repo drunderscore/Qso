@@ -69,6 +69,9 @@
     <Compile Include="DTO\Lobby.cs" />
     <Compile Include="DTO\LobbyInvitation.cs" />
     <Compile Include="DTO\LobbyParticipant.cs" />
+    <Compile Include="DTO\LootRecipe.cs" />
+    <Compile Include="DTO\LootRecipeOutput.cs" />
+    <Compile Include="DTO\LootRecipeSlot.cs" />
     <Compile Include="DTO\PlayerLoot.cs" />
     <Compile Include="DTO\MyChatUser.cs" />
     <Compile Include="DTO\MySummoner.cs" />
@@ -77,6 +80,8 @@
     <Compile Include="DTO\Summoner.cs" />
     <Compile Include="DTO\LobbyBuilder.cs" />
     <Compile Include="EndpointEventArgs.cs" />
+    <Compile Include="DTO\PlayerLootDelta.cs" />
+    <Compile Include="DTO\PlayerLootUpdate.cs" />
     <Compile Include="QsoApi.cs" />
     <Compile Include="QsoEndpointException.cs" />
     <Compile Include="QsoException.cs" />

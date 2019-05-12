@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,6 +59,16 @@ namespace Qso.DTO
         public string[] GetTags()
         {
             return Tags.Split( ',' );
+        }
+
+        public LootRecipe[] GetRecipes()
+        {
+            return QsoApi.GetDTO<LootRecipe[]>( "/lol-loot/v1/recipes/initial-item/{0}", HttpMethod.Get, null, ID );
+        }
+
+        public override string ToString()
+        {
+            return $"{LocalizedName}/{Description}/{Name}";
         }
     }
 }

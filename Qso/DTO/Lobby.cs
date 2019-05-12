@@ -59,22 +59,22 @@ namespace Qso.DTO
 
         public void Kick( Summoner s )
         {
-            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/kick", HttpMethod.Post, null, s.ID.ToString() );
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/kick", HttpMethod.Post, null, s.ID );
         }
 
         public void Promote( Summoner s )
         {
-            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, s.ID.ToString() );
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, s.ID );
         }
 
         public void Kick( int id )
         {
-            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/kick", HttpMethod.Post, null, id.ToString() );
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/kick", HttpMethod.Post, null, id );
         }
 
         public void Promote( int id )
         {
-            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, id.ToString() );
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, id );
         }
 
         public void AddBot( ChampionID champion, TeamID team, string difficulty )
@@ -84,11 +84,6 @@ namespace Qso.DTO
             json.teamId = team.ToString();
             json.botDifficulty = difficulty;
             QsoApi.Call( "/lol-lobby/v1/lobby/custom/bots", HttpMethod.Post, json.ToString() );
-        }
-
-        public void StopQueue()
-        {
-            QsoApi.Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Delete );
         }
 
         /// <summary>
@@ -102,11 +97,6 @@ namespace Qso.DTO
             if ( secondary != null )
                 json.secondPreference = secondary;
             QsoApi.Call( "/lol-lobby/v2/lobby/members/localMember/position-preferences", HttpMethod.Put, json );
-        }
-
-        public void StartQueue()
-        {
-            QsoApi.Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Post );
         }
     }
 }

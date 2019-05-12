@@ -9,7 +9,7 @@ namespace Qso.DTO
         [JsonProperty( "cellId" )]
         public int CellID { get; internal set; }
         [JsonProperty( "championId" )]
-        public int ChampionID { get; internal set; }
+        public ChampionID ChampionID { get; internal set; }
         [JsonProperty( "championPickIntent" )]
         public int ChampionIntentID { get; internal set; }
         /// <summary>
@@ -18,9 +18,9 @@ namespace Qso.DTO
         [JsonProperty( "playerType" )]
         public string PlayerType { get; internal set; }
         [JsonProperty( "spell1Id" )]
-        public int Spell1ID { get; internal set; }
+        public long Spell1ID { get; internal set; }
         [JsonProperty( "spell2Id" )]
-        public int Spell2ID { get; internal set; }
+        public long Spell2ID { get; internal set; }
         [JsonProperty( "selectedSkinId" )]
         public int SelectedSkinID { get; internal set; }
         [JsonProperty( "summonerId" )]
