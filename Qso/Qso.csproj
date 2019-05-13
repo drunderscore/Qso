@@ -72,6 +72,8 @@
     <Compile Include="DTO\LootRecipe.cs" />
     <Compile Include="DTO\LootRecipeOutput.cs" />
     <Compile Include="DTO\LootRecipeSlot.cs" />
+    <Compile Include="DTO\PerkPageBuilder.cs" />
+    <Compile Include="DTO\PerkPageResource.cs" />
     <Compile Include="DTO\PlayerLoot.cs" />
     <Compile Include="DTO\MyChatUser.cs" />
     <Compile Include="DTO\MySummoner.cs" />

@@ -93,10 +93,10 @@ namespace Qso.DTO
         {
             dynamic json = new JObject();
             if ( primary != null )
-                json.firstPreference = secondary;
+                json.firstPreference = primary;
             if ( secondary != null )
                 json.secondPreference = secondary;
-            QsoApi.Call( "/lol-lobby/v2/lobby/members/localMember/position-preferences", HttpMethod.Put, json );
+            QsoApi.Call( "/lol-lobby/v2/lobby/members/localMember/position-preferences", HttpMethod.Put, json.ToString() );
         }
     }
 }

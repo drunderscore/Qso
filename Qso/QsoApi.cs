@@ -162,6 +162,11 @@ namespace Qso
             return new LobbyBuilder( lobbyName, gamemode, gametype, mapId, teamSize );
         }
 
+        public static PerkPageBuilder BuildRunePage( long id )
+        {
+            return new PerkPageBuilder( id );
+        }
+
         public static ServiceStatusTickerMessage[] GetTickerMessages()
         {
             return GetDTO<ServiceStatusTickerMessage[]>( "/lol-service-status/v1/ticker-messages", HttpMethod.Get );
@@ -259,12 +264,12 @@ namespace Qso
             return json["filters"].ToObject<string[]>();
         }
 
-        public void StartQueue()
+        public static void StartQueue()
         {
             Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Post );
         }
 
-        public void StopQueue()
+        public static void StopQueue()
         {
             Call( "/lol-lobby/v2/lobby/matchmaking/search", HttpMethod.Delete );
         }
@@ -282,6 +287,16 @@ namespace Qso
         public static BuildInfo GetBuild()
         {
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
+        }
+
+        public static PerkPageResource[] GetMyRunePages()
+        {
+            return GetDTO<PerkPageResource[]>( "/lol-perks/v1/pages", HttpMethod.Get );
+        }
+
+        public static PerkPageResource GetRunePageByID( long id )
+        {
+            return GetDTO<PerkPageResource>( "/lol-perks/v1/pages/{0}", HttpMethod.Get, null, id );
         }
 
         /// <summary>

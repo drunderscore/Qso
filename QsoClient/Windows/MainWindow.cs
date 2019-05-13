@@ -31,12 +31,14 @@ namespace QsoClient
             if ( args.EventType == "Update" && args.URI == "/lol-gameflow/v1/session" )
             {
                 var phase = args.JSON["phase"].Value<string>();
+
                 if ( phase == "EndOfGame" && downloadAllReplaysCheckbox.Checked )
                 {
                     var gameId = args.JSON["gameData"]["gameId"].Value<long>();
                     try
                     {
                         QsoApi.DownloadReplay( gameId );
+                        Console.WriteLine( $"Downloading replay for game {gameId}" );
                         trayIcon.ShowBalloonTip( 2500, "Qso Client", "Downloading replay of your latest game!", ToolTipIcon.Info );
                         if ( alertWhenManyReplaysCheckbox.Checked )
                         {
@@ -61,22 +63,17 @@ namespace QsoClient
 
         private void MainWindow_Load( object sender, EventArgs e )
         {
-            autoqueueQueuesCombo.Items.Clear();
-            autoqueueQueuesCombo.Items.AddRange( Enum.GetNames( typeof( QueueType ) ) );
             uiLoot = QsoApi.GetMyPlayerLoot();
             allLootCombo.DataSource = uiLoot;
             recipesCombo.DataSource = uiRecipes;
+            RuneManager.Populate();
+            Console.WriteLine( string.Join( ",", RuneManager.Pages.Select( p => p.Name ) ) );
         }
 
         private void MainWindow_Resize( object sender, EventArgs e )
         {
             if ( WindowState == FormWindowState.Minimized )
                 Hide();
-        }
-
-        private void autoqueueQueueBtn_Click( object sender, EventArgs e )
-        {
-
         }
 
         private void trayIcon_MouseDoubleClick( object sender, MouseEventArgs e )
@@ -147,7 +144,6 @@ namespace QsoClient
         private void craftManyBtn_Click( object sender, EventArgs e )
         {
             CraftRecipeUI( true );
-
         }
 
         private void disenchantAllBtn_Click( object sender, EventArgs e )

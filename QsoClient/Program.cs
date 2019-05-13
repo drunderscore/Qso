@@ -17,6 +17,7 @@ namespace QsoClient.Windows
             if ( !AttemptInitializeQso() )
                 return;
             QsoApi.VeryVerbose = true;
+            var newPage = QsoApi.BuildRunePage( 1096668097 ).WithName( "haha no" ).Build();
             Application.Run( new MainWindow() );
         }
 
