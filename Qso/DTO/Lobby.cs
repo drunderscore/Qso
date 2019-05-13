@@ -31,18 +31,10 @@ namespace Qso.DTO
             return QsoApi.GetDTO<LobbyInvitation[]>( "/lol-lobby/v2/lobby/invitations", HttpMethod.Get );
         }
 
-        public LobbyInvitation[] Invite( int id )
+        public LobbyInvitation[] Invite( long id )
         {
             dynamic obj = new JObject();
             obj.toSummonerId = id;
-            dynamic json = new JArray( obj );
-            return QsoApi.GetDTO<LobbyInvitation[]>( "/lol-lobby/v2/lobby/invitations", HttpMethod.Post, json.ToString() );
-        }
-
-        public LobbyInvitation[] Invite( string name )
-        {
-            dynamic obj = new JObject();
-            obj.toSummonerName = name;
             dynamic json = new JArray( obj );
             return QsoApi.GetDTO<LobbyInvitation[]>( "/lol-lobby/v2/lobby/invitations", HttpMethod.Post, json.ToString() );
         }
@@ -77,11 +69,16 @@ namespace Qso.DTO
             QsoApi.Call( "/lol-lobby/v2/lobby/members/{0}/promote", HttpMethod.Post, null, id );
         }
 
+        public void RemoveBot( ChampionID champ, TeamID team )
+        {
+            QsoApi.Call( "/lol-lobby/v1/lobby/custom/bots/{0}", HttpMethod.Delete, null, $"bot_{Enum.GetName( typeof( ChampionID ), champ )}_{team}" );
+        }
+
         public void AddBot( ChampionID champion, TeamID team, string difficulty )
         {
             dynamic json = new JObject();
             json.championId = champion;
-            json.teamId = team.ToString();
+            json.teamId = Convert.ToString( (int)team ); // bullshit. the API expects a string, but can't use ToString cause enums are stupid, so I'm forced to cast it to an int to make it a string.
             json.botDifficulty = difficulty;
             QsoApi.Call( "/lol-lobby/v1/lobby/custom/bots", HttpMethod.Post, json.ToString() );
         }

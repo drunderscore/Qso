@@ -162,11 +162,6 @@ namespace Qso
             return new LobbyBuilder( lobbyName, gamemode, gametype, mapId, teamSize );
         }
 
-        public static PerkPageBuilder BuildRunePage( long id )
-        {
-            return new PerkPageBuilder( id );
-        }
-
         public static ServiceStatusTickerMessage[] GetTickerMessages()
         {
             return GetDTO<ServiceStatusTickerMessage[]>( "/lol-service-status/v1/ticker-messages", HttpMethod.Get );
@@ -201,11 +196,10 @@ namespace Qso
             return GetDTO<Summoner>( "/lol-summoner/v1/summoners/{0}", HttpMethod.Get, null, id );
         }
 
-        public static Summoner GetSummonerByName( string name )
+        // TODO: Support query params (still!)
+        public static Summoner[] GetSummonerByName( string name )
         {
-            dynamic json = new JObject();
-            json.name = name;
-            return GetDTO<Summoner>( "/lol-summoner/v2/summoners", HttpMethod.Get, json.ToString() );
+            return GetDTO<Summoner[]>( $"/lol-summoner/v2/summoners?name={name}", HttpMethod.Get );
         }
 
         public static PlayerLoot[] GetMyPlayerLoot()
@@ -226,6 +220,11 @@ namespace Qso
         public static ReplayMetadata GetReplayMetadata( long gameId )
         {
             return GetDTO<ReplayMetadata>( "/lol-replays/v1/metadata/{0}", HttpMethod.Get, null, gameId );
+        }
+
+        public static Queue[] GetQueues()
+        {
+            return GetDTO<Queue[]>( "/lol-game-queues/v1/queues", HttpMethod.Get );
         }
 
         public static void DownloadReplay( long gameId )

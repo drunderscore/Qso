@@ -66,6 +66,7 @@
     <Compile Include="DTO\ChatUser.cs" />
     <Compile Include="DTO\Constants.cs" />
     <Compile Include="DTO\ErrorResponse.cs" />
+    <Compile Include="DTO\GameTypeConfig.cs" />
     <Compile Include="DTO\Lobby.cs" />
     <Compile Include="DTO\LobbyInvitation.cs" />
     <Compile Include="DTO\LobbyParticipant.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="DTO\PlayerLoot.cs" />
     <Compile Include="DTO\MyChatUser.cs" />
     <Compile Include="DTO\MySummoner.cs" />
+    <Compile Include="DTO\Queue.cs" />
     <Compile Include="DTO\ReplayMetadata.cs" />
     <Compile Include="DTO\ServiceStatusTickerMessage.cs" />
     <Compile Include="DTO\Summoner.cs" />

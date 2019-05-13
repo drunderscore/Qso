@@ -19,6 +19,7 @@ namespace QsoClient
     {
         public PlayerLoot[] uiLoot;
         public LootRecipe[] uiRecipes;
+        public Queue[] queues;
 
         public MainWindow()
         {
@@ -66,8 +67,15 @@ namespace QsoClient
             uiLoot = QsoApi.GetMyPlayerLoot();
             allLootCombo.DataSource = uiLoot;
             recipesCombo.DataSource = uiRecipes;
-            RuneManager.Populate();
-            Console.WriteLine( string.Join( ",", RuneManager.Pages.Select( p => p.Name ) ) );
+            contentFilterTextbox.Text = string.Join( Environment.NewLine, QsoApi.GetContentFilters() );
+            gameTypeCombo.Items.AddRange( Enum.GetNames( typeof( GameType ) ) );
+            mapCombo.Items.AddRange( Enum.GetNames( typeof( MapID ) ) );
+            botChampionCombo.Items.AddRange( Enum.GetNames( typeof( ChampionID ) ) );
+            botChampionCombo.Sorted = true;
+            botTeamCombo.Items.AddRange( Enum.GetNames( typeof( TeamID ) ) );
+            queues = QsoApi.GetQueues();
+            queueTypesCombo.DataSource = queues;
+            queueTypesCombo.DisplayMember = "Name";
         }
 
         private void MainWindow_Resize( object sender, EventArgs e )
@@ -182,6 +190,113 @@ namespace QsoClient
                 // TODO: Wards
             }
             MessageBox.Show( $"Finished! The total disenchant was worth {be}BE and {oe}OE.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information );
+        }
+
+        private void createLobbyBtn_Click( object sender, EventArgs e )
+        {
+            if ( gameModeCombo.SelectedItem == null || gameTypeCombo.SelectedItem == null || mapCombo.SelectedItem == null || lobbyNameTextbox.Text == "" )
+            {
+                MessageBox.Show( "Missing required lobby configuration option.", "Value Missing", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
+            Lobby lobby = null;
+            try
+            {
+                lobby = QsoApi.BuildLobby( lobbyNameTextbox.Text, gameModeCombo.Text, (GameType)Enum.Parse( typeof( GameType ), (string)gameTypeCombo.SelectedItem ), (MapID)Enum.Parse( typeof( MapID ), (string)mapCombo.SelectedItem ), Convert.ToInt32( teamSizeUpDown.Value ) ).Create();
+            }
+            catch ( QsoEndpointException ex )
+            {
+                MessageBox.Show( $"Unable to create a lobby with such configuration:\n{ex.ErrorResponse.Message}", "Endpoint Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+        }
+
+        private void addBotBtn_Click( object sender, EventArgs e )
+        {
+            if ( botChampionCombo.SelectedItem == null || botTeamCombo.SelectedItem == null || botDifficultyCombo.SelectedItem == null )
+                return;
+            Lobby lobby = null;
+            try
+            {
+                lobby = QsoApi.GetMyLobby();
+            }
+            catch ( QsoEndpointException )
+            {
+                return; // lobby doesn't exist, no need for user response.
+            }
+
+            try
+            {
+                lobby.AddBot( (ChampionID)Enum.Parse( typeof( ChampionID ), (string)botChampionCombo.SelectedItem ), (TeamID)Enum.Parse( typeof( TeamID ), (string)botTeamCombo.SelectedItem ), (string)botDifficultyCombo.SelectedItem );
+            }
+            catch ( QsoEndpointException ex )
+            {
+                MessageBox.Show( $"Unable to add bot to lobby with such configuration:\n{ex.ErrorResponse.Message}", "Endpoint Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
+        }
+
+        private void queueBtn_Click( object sender, EventArgs e )
+        {
+            var selectedQueue = queues[queueTypesCombo.SelectedIndex];
+            if ( selectedQueue != null )
+            {
+                try
+                {
+                    QsoApi.CreateLobby( (QueueType)selectedQueue.ID );
+                }
+                catch ( QsoEndpointException ex )
+                {
+                    MessageBox.Show( $"Unable to create a lobby with that queue:\n{ex.ErrorResponse.Message}", "Endpoint Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                }
+            }
+        }
+
+        private void inviteSummonerBtn_Click( object sender, EventArgs e )
+        {
+            Lobby lobby = null;
+            try
+            {
+                lobby = QsoApi.GetMyLobby();
+            }
+            catch ( QsoEndpointException ) { }
+
+            Summoner sum = null;
+            try
+            {
+                var found = QsoApi.GetSummonerByName( inviteSummonerTextbox.Text );
+                if ( found.Length <= 0 )
+                {
+                    MessageBox.Show( "Unable to find summoner", "Missing", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                    return;
+                }
+                sum = found[0];
+            }
+            catch ( QsoEndpointException ex )
+            {
+                MessageBox.Show( $"Error trying to find summoner:\n{ex.ErrorResponse.Message}", "Endpoint Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
+            lobby.Invite( sum.ID );
+        }
+
+        private void forceStartLobbyBtn_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                QsoApi.GetMyLobby().StartChampSelect();
+            }
+            catch ( QsoEndpointException ) { }
+        }
+
+        private void forceLeaveLobbyBtn_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                QsoApi.LeaveMyLobby();
+            }
+            catch ( QsoEndpointException ) { }
         }
     }
 }

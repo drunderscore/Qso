@@ -36,5 +36,10 @@ namespace Qso.DTO
         public int[] SelectedPerks { get; internal set; }
         [JsonProperty( "subStyleId" )]
         public int SubStyle { get; internal set; }
+
+        public PerkPageBuilder Modify()
+        {
+            return new PerkPageBuilder( ID );
+        }
     }
 }
