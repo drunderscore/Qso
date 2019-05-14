@@ -16,7 +16,9 @@ namespace QsoClient.Windows
             Application.SetCompatibleTextRenderingDefault( false );
             if ( !AttemptInitializeQso() )
                 return;
+#if DEBUG
             QsoApi.VeryVerbose = true;
+#endif
             Application.Run( new MainWindow() );
         }
 
