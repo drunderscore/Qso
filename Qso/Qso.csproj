@@ -64,6 +64,8 @@
     <Compile Include="DTO\ChampSelect\ChampSelectSession.cs" />
     <Compile Include="DTO\ChampSelect\ChampSelectTimer.cs" />
     <Compile Include="DTO\ChatUser.cs" />
+    <Compile Include="DTO\ChatUserLoLBuilder.cs" />
+    <Compile Include="DTO\ChatUserResourceLoL.cs" />
     <Compile Include="DTO\Constants.cs" />
     <Compile Include="DTO\ErrorResponse.cs" />
     <Compile Include="DTO\GameTypeConfig.cs" />

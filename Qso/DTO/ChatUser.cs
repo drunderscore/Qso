@@ -23,6 +23,8 @@ namespace Qso.DTO
         public string StatusMessage { get; internal set; }
         [JsonProperty( "note" )]
         public string Note { get; internal set; }
+        [JsonProperty( "lol" )]
+        public ChatUserResourceLoL LoL { get; internal set; }
         [JsonProperty( "groupId" )]
         public int GroupID { get; internal set; }
 

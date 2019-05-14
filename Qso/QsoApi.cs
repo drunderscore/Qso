@@ -288,6 +288,11 @@ namespace Qso
             return GetDTO<BuildInfo>( "/system/v1/builds", HttpMethod.Get );
         }
 
+        public static ChatUserLoLBuilder BuildChatUser()
+        {
+            return new ChatUserLoLBuilder();
+        }
+
         public static PerkPageResource[] GetMyRunePages()
         {
             return GetDTO<PerkPageResource[]>( "/lol-perks/v1/pages", HttpMethod.Get );
